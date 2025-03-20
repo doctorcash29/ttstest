@@ -1,0 +1,713 @@
+html, body {
+  overflow-x: hidden;
+}
+
+/* ====== Estilos generales ====== */
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #000000;
+  color: #E5E7EB;
+  font-family: 'Share Tech Mono', monospace;
+  line-height: 1.6;
+  scroll-behavior: smooth;
+}
+
+/* Fuentes VT323 */
+.vt323-font {
+  font-family: 'VT323', monospace !important;
+}
+
+/* Canvas Matrix */
+#matrix {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -999;
+  background: #000000;
+}
+
+/* Ocultar label */
+.hidden-label {
+  position: absolute;
+  left: -9999px;
+}
+
+/* Top Bar Marquee */
+.top-bar-marquee {
+  position: relative;
+  width: 100%;
+  height: 40px;
+  background-color: #000000;
+  overflow: hidden;
+  box-shadow: 0 1px 5px rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  padding: 0 1rem;
+}
+.marquee-content {
+  display: inline-block;
+  white-space: nowrap;
+  color: #0FFF95;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 1rem;
+  animation: marquee 30s linear infinite;
+}
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* Top Bar */
+.main-top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.8rem 2rem;
+  background-color: transparent;
+}
+.left-bar,
+.right-bar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.top-btn {
+  display: inline-flex;
+  align-items: center;
+  background-color: #1B1B1B;
+  color: #E5E7EB;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
+  font-family: 'VT323', monospace;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.3s;
+}
+.top-btn:hover {
+  background-color: #2C2F36;
+  transform: scale(1.05);
+}
+
+/* Botones Matrix */
+.matrix-btn {
+  background-color: #000000;
+  color: #0FFF95;
+  border: 2px solid #0FFF95;
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
+  font-family: 'VT323', monospace;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
+}
+.matrix-btn:hover {
+  box-shadow: 0 0 20px #0FFF95;
+  transform: scale(1.05);
+}
+.matrix-icon {
+  width: 32px;
+  height: auto;
+  margin-left: 0.5rem;
+}
+
+/* Right Bar */
+.right-bar ul {
+  list-style: none;
+  display: flex;
+  gap: 1.5rem;
+  margin: 0;
+  padding: 0;
+}
+.right-bar ul li a {
+  font-family: 'VT323', monospace;
+  font-size: 1.1rem;
+  color: #0FFF95;
+  text-decoration: none;
+  padding: 0.3rem 0.5rem;
+  transition: color 0.3s, transform 0.3s;
+}
+.right-bar ul li a:hover {
+  color: #101116;
+  background-color: #0FFF95;
+  border-radius: 4px;
+  transform: scale(1.05);
+}
+
+/* Hero Section */
+.hero-section {
+  position: relative;
+  width: 100%;
+  min-height: 70vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 4rem 1rem;
+  background-color: transparent;
+}
+.hero-content {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.dashboard-title {
+  font-family: 'VT323', monospace;
+  line-height: 1.1;
+  color: #0FFF95;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  text-align: center;
+  animation: glitch 2s infinite;
+}
+.hero-subtitle {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 1.2rem;
+  color: #E5E7EB;
+  margin-bottom: 2rem;
+  letter-spacing: 1px;
+}
+.hero-cta {
+  background-color: #0FFF95;
+  color: #101116;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 8px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+.hero-cta:hover {
+  background-color: #0AE68F;
+  transform: scale(1.05);
+}
+
+/* Glitch & Glow Titles */
+@keyframes glitch {
+  0% { text-shadow: 2px 2px 0 #0FFF95, -2px -2px 0 #0FFF95; }
+  20% { text-shadow: -2px 2px 0 #0FFF95, 2px -2px 0 #0FFF95; }
+  40% { text-shadow: 2px -2px 0 #0FFF95, -2px 2px 0 #0FFF95; }
+  60% { text-shadow: -2px -2px 0 #0FFF95, 2px 2px 0 #0FFF95; }
+  80% { text-shadow: 2px 2px 0 #0FFF95, -2px -2px 0 #0FFF95; }
+  100% { text-shadow: none; }
+}
+.glow-title {
+  font-family: 'VT323', monospace;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: #0FFF95;
+  animation: glowPulse 2s infinite alternate;
+}
+@keyframes glowPulse {
+  0% {
+    text-shadow: 0 0 4px #0FFF95, 0 0 8px #0FFF95;
+  }
+  100% {
+    text-shadow: 0 0 10px #0FFF95, 0 0 20px #0FFF95;
+  }
+}
+
+/* Scrollbar Container (Fondo Negro) - centrado verticalmente */
+.scrollbar-container {
+  position: fixed;
+  top: 25vh;
+  left: 10px;
+  height: 50vh;
+  width: 10px;
+  background-color: #000000;
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+}
+
+/* Scrollbar (Barra de Progreso Verde) */
+.scrollbar {
+  position: absolute;
+  width: 8px;
+  height: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  cursor: grab;
+  background: repeating-linear-gradient(
+    to bottom,
+    #0fff95 0px,
+    #0fff95 3px,
+    #000000 3px,
+    #000000 6px
+  );
+  border: 2px solid #0FFF95;
+  box-shadow: 0 0 8px rgba(15,255,149,0.7);
+  border-radius: 0;
+  transition: height 0.3s ease;
+}
+.scrollbar.short {
+  height: 30px;
+}
+
+/* =========================
+   SECCIÓN CREATE PROFILE
+   ========================= */
+.create-profile-section {
+  display: flex;
+  justify-content: center;
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+.create-profile {
+  background-color: rgba(16,17,22,0.5);
+  border: 1px solid #0FFF95;
+  border-radius: 12px;
+  box-shadow:
+    0 0 10px rgba(15,255,149,0.4),
+    0 0 20px rgba(15,255,149,0.2);
+  padding: 3rem;
+  width: 100%;
+  max-width: 600px;
+  text-align: center;
+  margin: 2rem auto;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.create-profile:hover {
+  transform: translateY(-5px);
+  box-shadow:
+    0 0 20px rgba(15,255,149,0.4),
+    0 0 40px rgba(15,255,149,0.2);
+}
+
+/* Título sin glow, solo borde negro */
+.create-profile h3 {
+  color: #0FFF95;
+  margin-bottom: 1.5rem;
+  font-family: 'VT323', monospace;
+  font-size: 2.5rem;
+  text-shadow: 
+    -1px 0 #000,
+     1px 0 #000,
+     0 -1px #000,
+     0 1px #000;
+}
+
+/* Formulario Profile */
+#create-profile input,
+#create-profile button {
+  font-family: 'Share Tech Mono', monospace;
+}
+
+#create-profile input {
+  background-color: #2C2F36;
+  border: none;
+  color: #E5E7EB;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  width: 100%;
+  border-radius: 6px;
+}
+
+/* Botón Access */
+.access-btn {
+  background-color: #0FFF95;
+  color: #101116;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  cursor: pointer;
+  border-radius: 6px;
+  display: block;
+  margin: 0 auto;
+  font-family: 'VT323', monospace;
+  font-size: 1.2rem;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  text-shadow: none;
+}
+.access-btn:hover {
+  background-color: #0AE68F;
+  box-shadow: 0 0 8px #0FFF95, 0 0 15px #0FFF95;
+}
+.access-btn:active,
+.access-btn.tv-off {
+  animation: tvOff 0.8s forwards;
+}
+@keyframes tvOff {
+  0% { transform: scaleY(1); opacity: 1; }
+  50% { transform: scaleY(0.1); opacity: 0.3; }
+  100% { transform: scaleY(1); opacity: 1; }
+}
+
+/* Consola */
+.code-console {
+  background-color: rgba(16,17,22,0.8);
+  border: 1px solid #0FFF95;
+  color: #0FFF95;
+  font-family: 'VT323', monospace;
+  padding: 1rem;
+  margin-top: 1rem;
+  min-height: 100px;
+  white-space: pre-wrap;
+  overflow: hidden;
+  animation: binaryBlink 1s infinite;
+}
+@keyframes binaryBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.8; }
+}
+
+/* Efecto scan para simular un escaneo en la consola */
+.code-console.scanning {
+  animation: scanLetters 1s steps(20, end) infinite;
+}
+@keyframes scanLetters {
+  0% { filter: brightness(0.8); }
+  50% { filter: brightness(1.2); }
+  100% { filter: brightness(0.8); }
+}
+
+/* SECCIÓN Empowering Authenticity */
+.launch-app-section {
+  background-color: rgba(16,17,22,0.8);
+  border: 1px solid #0FFF95;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(15,255,149,0.1);
+  padding: 2rem;
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+  margin: 2rem auto;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.launch-app-section:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 0 20px rgba(15,255,149,0.3);
+}
+.launch-app-section h2 {
+  color: #0FFF95;
+  margin-bottom: 1rem;
+  font-family: 'VT323', monospace;
+  font-size: 2rem;
+}
+.launch-container {
+  margin: 0 auto;
+}
+.subtitle {
+  color: #9CA3AF;
+  font-size: 1rem;
+  margin-bottom: 1.5rem;
+  font-family: 'Share Tech Mono', monospace;
+}
+.launch-btn {
+  background-color: #0FFF95;
+  color: #101116;
+  border: none;
+  padding: 0.8rem 2rem;
+  border-radius: 8px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  margin-bottom: 1.5rem;
+}
+.launch-btn:hover {
+  background-color: #0AE68F;
+  transform: scale(1.05);
+}
+.coming-soon {
+  color: #9CA3AF;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.9rem;
+  margin: 0.5rem 0;
+}
+.trade-info {
+  background-color: rgba(16,17,22,0.8);
+  padding: 1rem;
+  border-radius: 12px;
+  margin-top: 1rem;
+  border: 1px solid #0FFF95;
+  box-shadow: 0 0 10px rgba(15,255,149,0.1);
+}
+.trade-info p {
+  color: #E5E7EB;
+  margin: 0.5rem 0;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 1rem;
+}
+
+/* SECCIÓN $TTS (texto arriba, imagen debajo) */
+.tts-section {
+  background-color: transparent;
+  padding: 4rem 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+.tts-info {
+  max-width: 800px;
+  margin-bottom: 2rem;
+}
+.tts-info h2 {
+  color: #0FFF95;
+  font-family: 'VT323', monospace;
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+.tts-info p {
+  color: #E5E7EB;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+/* Efecto de glow siguiendo la silueta de la imagen (PNG transparente) */
+.tts-image img {
+  width: 300px;
+  transition: transform 0.3s ease;
+  /* Elimina cualquier borde o border-radius */
+  border: none;
+  border-radius: 0;
+
+  /* Animación con drop-shadow para que el glow rodee la forma del PNG */
+  animation: flickerGlow 2s infinite alternate;
+  filter: drop-shadow(0 0 5px #0FFF95);
+}
+.tts-image img:hover {
+  transform: scale(1.05);
+}
+@keyframes flickerGlow {
+  0% {
+    filter: drop-shadow(0 0 5px #0FFF95);
+  }
+  50% {
+    filter: drop-shadow(0 0 15px #0FFF95);
+  }
+  100% {
+    filter: drop-shadow(0 0 30px #0FFF95);
+  }
+}
+
+/* Mascot Section */
+.mascot-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  background-color: transparent;
+  padding: 4rem 2rem;
+  font-family: 'VT323', monospace;
+}
+.mascot-info {
+  max-width: 600px;
+  margin-bottom: 2rem; /* Espacio entre el texto y la galería */
+}
+.mascot-info h2 {
+  color: #0FFF95;
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+.mascot-info p {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 1rem;
+  color: #E5E7EB;
+}
+
+/* Galería de imágenes de Nutnut (6 imágenes apiladas) */
+.mascot-gallery {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem; /* espacio vertical entre las imágenes */
+  align-items: center;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+}
+.mascot-gallery img {
+  width: 300px;
+  border: 2px solid #0FFF95;
+  border-radius: 12px;
+  transition: transform 0.3s ease;
+}
+.mascot-gallery img:hover {
+  transform: scale(1.05);
+}
+
+/* Sección Tokenomics */
+.tokenomics-section {
+  background-color: transparent;
+  padding: 4rem 2rem;
+}
+.tokenomics-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  gap: 1rem;
+  text-align: center;
+}
+.tokenomics-content {
+  max-width: 800px;
+}
+
+/* Sección How to Buy */
+.how-to-buy-section {
+  background-color: transparent;
+  padding: 4rem 2rem;
+}
+.how-to-buy-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  gap: 1rem;
+  text-align: center;
+}
+.how-to-buy-content {
+  max-width: 800px;
+}
+
+/* Social Media */
+.social-media {
+  padding: 2rem;
+  text-align: center;
+}
+.social-media h2 {
+  color: #0FFF95;
+  font-family: 'VT323', monospace;
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+.social-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+.social-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.social-item img {
+  width: 50px;
+  height: auto;
+  margin-bottom: 0.5rem;
+}
+.social-icon {
+  width: 200px;
+  height: auto;
+  margin-bottom: 0.5rem;
+}
+.social-item p {
+  color: #E5E7EB;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 1rem;
+}
+
+/* Mega Footer */
+.mega-footer {
+  background: transparent;
+  padding: 3rem 2rem;
+  color: #E5E7EB;
+  animation: fadeIn 1.5s ease-in-out;
+  position: relative;
+  box-shadow: 0 40px 80px -10px rgba(15,255,149,0.3);
+}
+.footer-columns {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+.footer-col {
+  min-width: 180px;
+  margin: 1rem;
+}
+.footer-col ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.footer-col li {
+  margin: 0.4rem 0;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 1rem;
+}
+.footer-final {
+  text-align: center;
+  margin-top: 2rem;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 1rem;
+  color: #E5E7EB;
+  opacity: 0.8;
+}
+
+/* Animaciones al hacer scroll */
+.animate-section {
+  opacity: 0;
+  transform: translateY(50px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+.animate-section.in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Fade In */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Media Queries */
+@media (max-width: 768px) {
+  .main-top-bar {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+  .left-bar,
+  .right-bar {
+    width: 100%;
+    justify-content: space-around;
+  }
+  .hero-section {
+    padding: 2rem 1rem;
+  }
+  #main-title {
+    font-size: 2.5rem !important;
+  }
+  .hero-subtitle {
+    font-size: 1rem;
+  }
+  .top-btn {
+    font-size: 1rem;
+    padding: 0.5rem 0.8rem;
+  }
+  .social-container {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .create-profile-section,
+  .launch-app-section,
+  .tokenomics-container,
+  .how-to-buy-container {
+    max-width: 90%;
+  }
+  /* Ajustes para secciones TTS y Mascot en pantallas pequeñas */
+  .tts-section,
+  .mascot-section {
+    padding: 2rem 1rem;
+  }
+  .tts-info,
+  .mascot-info {
+    margin-bottom: 1.5rem;
+  }
+  .mascot-gallery img {
+    width: 80%; /* O ajusta según prefieras en móvil */
+  }
+}
