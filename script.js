@@ -1,4 +1,4 @@
-// Función para dividir texto en spans (se usa para otras animaciones)
+// Función para dividir texto en spans (para animaciones)
 function splitText(selector) {
   const element = document.querySelector(selector);
   const text = element.textContent.trim();
@@ -6,7 +6,7 @@ function splitText(selector) {
   element.innerHTML = letters.map(letter => `<span>${letter}</span>`).join('');
 }
 
-// Función para animar letras con Anime.js (para títulos, etc.)
+// Función para animar letras con Anime.js
 function animateLetters(selector) {
   if (!document.querySelector(selector + " span")) {
     splitText(selector);
@@ -32,7 +32,7 @@ function animateLetters(selector) {
   });
 }
 
-// Función para reproducir el sonido (sound1.mp3)
+// Función para reproducir sonido (sound1.mp3)
 function playSound() {
   const sound = document.getElementById("sound1");
   sound.play();
@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
     sectionObserver.observe(section);
   });
 
-  // Lógica para el botón "Play Music"
+  // Botón "Play Music"
   const playMusicBtn = document.getElementById('play-music-btn');
   if (playMusicBtn) {
     playMusicBtn.addEventListener('click', () => {
@@ -81,18 +81,85 @@ document.addEventListener('DOMContentLoaded', () => {
           console.error("No se pudo reproducir la música:", err);
         });
       }
-      
       playMusicBtn.classList.add('click-anim');
       setTimeout(() => {
         playMusicBtn.classList.remove('click-anim');
       }, 300);
     });
   }
+
+  // Barra de desplazamiento horizontal
+  const scrollbar = document.querySelector('.scrollbar');
+  if (scrollbar) {
+    window.addEventListener('scroll', () => {
+      const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const scrollPosition = window.scrollY;
+      const scrollPercentage = scrollPosition / scrollHeight;
+      scrollbar.style.width = `${scrollPercentage * 100}%`;
+    });
+  }
+
+  // EFECTO MATRIX (fondo animado)
+  const canvasMatrix = document.getElementById("matrix");
+  const ctxMatrix = canvasMatrix.getContext("2d");
+  function resizeCanvas() {
+    canvasMatrix.height = window.innerHeight;
+    canvasMatrix.width = window.innerWidth;
+  }
+  resizeCanvas();
+  window.addEventListener("resize", resizeCanvas);
+  const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  const letterArr = letters.split("");
+  const fontSize = 14;
+  let columns = canvasMatrix.width / fontSize;
+  const drops = [];
+  for (let x = 0; x < columns; x++) {
+    drops[x] = 1;
+  }
+  function drawMatrix() {
+    ctxMatrix.fillStyle = "rgba(0, 0, 0, 0.05)";
+    ctxMatrix.fillRect(0, 0, canvasMatrix.width, canvasMatrix.height);
+    ctxMatrix.fillStyle = "#0FFF95";
+    ctxMatrix.font = fontSize + "px monospace";
+    for (let i = 0; i < drops.length; i++) {
+      const text = letterArr[Math.floor(Math.random() * letterArr.length)];
+      ctxMatrix.fillText(text, i * fontSize, drops[i] * fontSize);
+      if (drops[i] * fontSize > canvasMatrix.height && Math.random() > 0.975) {
+        drops[i] = 0;
+      }
+      drops[i]++;
+    }
+  }
+  setInterval(drawMatrix, 33);
+
+  // EFECTO DE "INICIAL GLITCH" y luego "CARGANDO" al mostrar la sección Empowering Authenticity
+  let loadingTriggered = false;
+  const launchSection = document.getElementById("launch-app-nav");
+  const loadingOverlay = document.getElementById("loading-overlay");
+  const launchObserver = new IntersectionObserver((entries, observer) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting && !loadingTriggered) {
+        loadingTriggered = true;
+        // Fase 1: Aplica efecto glitch inicial (1.5 seg) solo al texto del overlay
+        loadingOverlay.classList.add("initial-glitch");
+        // Luego, después de 1.5 seg, elimina la fase de glitch y activa el modo "cargando" (4 seg)
+        setTimeout(() => {
+          loadingOverlay.classList.remove("initial-glitch");
+          loadingOverlay.classList.add("active");
+          setTimeout(() => {
+            loadingOverlay.classList.remove("active");
+          }, 4000);
+        }, 1500);
+        observer.unobserve(launchSection);
+      }
+    });
+  }, { threshold: 0.5 });
+  launchObserver.observe(launchSection);
 });
 
-// NUEVA FUNCIÓN: Efecto scramble para simular el escaneo
+// Efecto scramble (para distorsionar textos)
 function scrambleText(finalText, element, interval, callback) {
-  const totalIterations = 15; // Número de cambios antes de fijar la letra
+  const totalIterations = 15;
   let iteration = 0;
   const textLength = finalText.length;
   const scrambleInterval = setInterval(() => {
@@ -115,35 +182,25 @@ function scrambleText(finalText, element, interval, callback) {
   }, interval);
 }
 
-// Lógica del formulario de perfil y consola
+// Formulario de perfil y consola
 const form = document.getElementById('profile-form');
 const codeConsole = document.getElementById('code-console');
 const accessBtn = document.querySelector('.access-btn');
-
 if (form) {
   form.addEventListener('submit', (e) => {
     e.preventDefault();
     const nickname = document.getElementById('nickname').value;
     document.querySelector('.create-profile h3').textContent = 'Welcome!';
-    
-    // Aplica animación de "TV apagado" al botón
     accessBtn.classList.add('tv-off');
-    
-    // Se espera la duración de la animación (0.8s definida en CSS)
     setTimeout(() => {
       form.style.display = 'none';
       codeConsole.style.display = 'block';
       codeConsole.textContent = '';
-      
-      // Inicio de la cadena de animaciones:
-      // El primer audio se reproduce al inicio (correcto)
       playSound();
       scrambleText("Analyzing existing users", codeConsole, 50, () => {
-        // Para el segundo sonido: se espera 2 segundos antes de reproducirlo
         setTimeout(() => {
           playSound();
           scrambleText("Adding to the database", codeConsole, 50, () => {
-            // Para el tercer sonido: se espera 2 segundos antes de reproducirlo
             setTimeout(() => {
               playSound();
               scrambleText(`Welcome, ${nickname}!`, codeConsole, 50, null);
@@ -154,89 +211,3 @@ if (form) {
     }, 800);
   });
 }
-
-// Lógica de la barra de desplazamiento personalizada
-const scrollbar = document.querySelector('.scrollbar');
-const scrollbarContainer = document.querySelector('.scrollbar-container');
-let isDragging = false;
-
-scrollbar.addEventListener('mousedown', () => {
-  isDragging = true;
-  document.addEventListener('mousemove', onMouseMove);
-  document.addEventListener('mouseup', onMouseUp);
-});
-
-function onMouseMove(e) {
-  if (!isDragging) return;
-  const containerRect = scrollbarContainer.getBoundingClientRect();
-  const currentHeight = scrollbar.offsetHeight;
-  let newTop = e.clientY - containerRect.top - currentHeight / 2;
-  newTop = Math.max(0, Math.min(newTop, containerRect.height - currentHeight));
-  scrollbar.style.top = `${newTop}px`;
-  
-  const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
-  const scrollPercentage = newTop / (containerRect.height - currentHeight);
-  window.scrollTo(0, scrollHeight * scrollPercentage);
-}
-
-function onMouseUp() {
-  isDragging = false;
-  document.removeEventListener('mousemove', onMouseMove);
-  document.removeEventListener('mouseup', onMouseUp);
-}
-
-// Actualiza la posición de la barra de progreso según scroll
-window.addEventListener('scroll', () => {
-  const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
-  const scrollPosition = window.scrollY;
-  const scrollPercentage = scrollPosition / scrollHeight;
-  
-  const threshold = 50;
-  if (scrollPosition < threshold || scrollPosition > (scrollHeight - threshold)) {
-    scrollbar.classList.add('short');
-  } else {
-    scrollbar.classList.remove('short');
-  }
-  
-  const containerRect = scrollbarContainer.getBoundingClientRect();
-  const currentHeight = scrollbar.offsetHeight;
-  const newTop = scrollPercentage * (containerRect.height - currentHeight);
-  scrollbar.style.top = `${newTop}px`;
-});
-
-// Efecto Matrix en el canvas
-const canvasMatrix = document.getElementById("matrix");
-const ctxMatrix = canvasMatrix.getContext("2d");
-function resizeCanvas() {
-  canvasMatrix.height = window.innerHeight;
-  canvasMatrix.width = window.innerWidth;
-}
-resizeCanvas();
-
-const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-const letterArr = letters.split("");
-const fontSize = 14;
-const columns = canvasMatrix.width / fontSize;
-const drops = [];
-for (let x = 0; x < columns; x++) {
-  drops[x] = 1;
-}
-
-function drawMatrix() {
-  ctxMatrix.fillStyle = "rgba(0, 0, 0, 0.05)";
-  ctxMatrix.fillRect(0, 0, canvasMatrix.width, canvasMatrix.height);
-  ctxMatrix.fillStyle = "#0FFF95";
-  ctxMatrix.font = fontSize + "px monospace";
-  
-  for (let i = 0; i < drops.length; i++) {
-    const text = letterArr[Math.floor(Math.random() * letterArr.length)];
-    ctxMatrix.fillText(text, i * fontSize, drops[i] * fontSize);
-    
-    if (drops[i] * fontSize > canvasMatrix.height && Math.random() > 0.975) {
-      drops[i] = 0;
-    }
-    drops[i]++;
-  }
-}
-setInterval(drawMatrix, 33);
-window.addEventListener("resize", resizeCanvas);

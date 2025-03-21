@@ -8,7 +8,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=VT323&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
   
-  <!-- Estilos adicionales + Footer Buttons con glitch -->
+  <!-- Estilos adicionales -->
   <style>
     /* Ajuste para "Create your profile" */
     .create-profile h3 {
@@ -16,35 +16,28 @@
       margin-bottom: 1.5rem;
       font-family: 'VT323', monospace;
       font-size: 2.5rem;
-      text-shadow: 
-         -1px 0 #000,
-          1px 0 #000,
-          0 -1px #000,
-          0 1px #000;
+      text-shadow: -1px 0 #000, 1px 0 #000, 0 -1px #000, 0 1px #000;
     }
-
-    /* Botones del footer con efecto glitch (si los llegaras a usar en otro lado) */
+    /* Botones del footer con efecto glitch */
     .footer-btn {
       display: inline-block;
       padding: 0.4rem 0.8rem;
       background-color: transparent;
-      color: #fff; /* Texto blanco */
-      border: 1px solid #fff; /* Borde blanco */
+      color: #fff;
+      border: 1px solid #fff;
       border-radius: 4px;
       text-decoration: none;
       transition: background-color 0.3s, transform 0.3s, color 0.3s;
     }
     .footer-btn:hover {
       background-color: #0FFF95;
-      color: #000; /* Texto negro cuando hover */
+      color: #000;
       animation: glitch 1s steps(2, end);
       transform: scale(1.05);
     }
     .footer-btn:visited {
-      color: #fff; /* Evita el color morado de enlace visitado */
+      color: #fff;
     }
-
-    /* Keyframes para el glitch */
     @keyframes glitch {
       0% { text-shadow: 2px 2px 0 #0FFF95, -2px -2px 0 #0FFF95; }
       20% { text-shadow: -2px 2px 0 #0FFF95, 2px -2px 0 #0FFF95; }
@@ -56,18 +49,18 @@
   </style>
 </head>
 <body>
-  <!-- Audio de fondo sin autoplay (se activará con el botón Play Music) -->
-  <audio id="background-music" src="background.mp3" loop></audio>
-  <!-- Audio para acciones: se reproducirá justo al iniciar la animación de cada texto -->
-  <audio id="sound1" src="sound1.mp3" preload="auto"></audio>
+  <!-- Overlay de carga: ocupa toda la pantalla -->
+  <div id="loading-overlay">
+    <div class="loading-text">Logging in Matrix</div>
+  </div>
 
   <!-- Canvas para efecto Matrix en el fondo -->
   <canvas id="matrix"></canvas>
 
-  <!-- Contenedor de la barra de desplazamiento (fondo negro) -->
-  <div class="scrollbar-container" data-dynamic-scrollbar="true">
-    <div class="scrollbar"></div>
-  </div>
+  <!-- Audio de fondo sin autoplay -->
+  <audio id="background-music" src="background.mp3" loop></audio>
+  <!-- Audio para acciones -->
+  <audio id="sound1" src="sound1.mp3" preload="auto"></audio>
 
   <!-- BARRA SUPERIOR con marquee -->
   <div class="top-bar-marquee">
@@ -81,17 +74,32 @@
     </div>
   </div>
 
+  <!-- BARRA DE SCROLL HORIZONTAL -->
+  <div class="scrollbar-container" data-dynamic-scrollbar="true">
+    <div class="scrollbar"></div>
+  </div>
+
   <!-- TOP BAR: botones y menú -->
   <header class="main-top-bar">
-    <div class="left-bar">
-      <button onclick="window.location.href='#tokenomics'" class="top-btn click-anim-btn matrix-btn">
-        Tokenomics
-        <img src="Logo_tokenomics.png" alt="Arrow Icon" class="matrix-icon" />
-      </button>
-      <button onclick="window.location.href='#how-to-buy'" class="top-btn click-anim-btn matrix-btn">
-        How to buy
-        <img src="Logo_Solana.png" alt="Arrow Icon" class="matrix-icon" />
-      </button>
+    <div class="left-bar" style="display: flex; gap: 2rem;">
+      <div style="display: flex; flex-direction: column;">
+        <button onclick="window.location.href='#tokenomics'" class="top-btn click-anim-btn matrix-btn">
+          Tokenomics
+          <img src="Logo_tokenomics.png" alt="Arrow Icon" class="matrix-icon" />
+        </button>
+        <button id="docs-btn" class="top-btn click-anim-btn matrix-btn" style="margin-top: 0.5rem;">
+          Docs
+        </button>
+      </div>
+      <div style="display: flex; flex-direction: column;">
+        <button onclick="window.location.href='#how-to-buy'" class="top-btn click-anim-btn matrix-btn">
+          How to buy
+          <img src="Logo_Solana.png" alt="Arrow Icon" class="matrix-icon" />
+        </button>
+        <button id="play-music-btn" class="top-btn click-anim-btn matrix-btn" style="margin-top: 0.5rem;">
+          Play Music
+        </button>
+      </div>
     </div>
     <nav class="right-bar">
       <ul>
@@ -99,7 +107,6 @@
         <li><a href="https://t.me/TreeTrustScore" target="_blank">Telegram</a></li>
         <li><a href="#tts">About</a></li>
         <li><a href="https://t.me/diurnsol" target="_blank">Contact</a></li>
-        <li><a href="#launch-app-nav">Launch dApp</a></li>
       </ul>
     </nav>
   </header>
@@ -114,23 +121,14 @@
         First solana reliability solution <br>
         Escape traps, spot the alpha
       </p>
-      <!-- Botón principal "Launch dApp" -->
       <button class="hero-cta vt323-font">
         Launch dApp
-      </button>
-      <!-- Botón para reproducir la música -->
-      <button 
-        id="play-music-btn" 
-        class="top-btn click-anim-btn matrix-btn" 
-        style="margin-top: 1rem;"
-      >
-        Play Music
       </button>
     </div>
   </section>
 
-  <!-- Sección: Create Profile -->
-  <section class="create-profile-section">
+  <!-- Sección: Create Profile (movida más arriba) -->
+  <section class="create-profile-section" style="margin-top: -50px;">
     <div class="create-profile" id="create-profile">
       <h3 class="vt323-font">Create your profile</h3>
       <form id="profile-form">
@@ -142,7 +140,7 @@
     </div>
   </section>
 
-  <!-- Sección: Empowering Authenticity with $TTS -->
+  <!-- Sección Empowering Authenticity with $TTS -->
   <section class="launch-app-section" id="launch-app-nav">
     <div class="launch-container">
       <h2 class="vt323-font">Empowering Authenticity with $TTS</h2>
@@ -155,7 +153,7 @@
     </div>
   </section>
 
-  <!-- Sección $TTS (texto arriba, imagen debajo) -->
+  <!-- Sección $TTS -->
   <section id="tts" class="tts-section animate-section">
     <div class="tts-info">
       <h2 id="tts-explained" class="vt323-font glow-title animate-title">$TTS Explained</h2>
@@ -174,7 +172,6 @@
       <h2 class="vt323-font glow-title animate-title">Nutnut</h2>
       <p>Meet the official $TTS mascot representing transparency and trust in the Solana Ecosystem!</p>
     </div>
-    <!-- Galería con 6 imágenes, una debajo de otra -->
     <div class="mascot-gallery">
       <img src="nobear.png" alt="TTS Mascot 1" />
       <img src="nobear2.png" alt="TTS Mascot 2" />
@@ -230,7 +227,7 @@
     </div>
   </section>
 
-  <!-- Footer reducido: solo el texto final -->
+  <!-- Footer -->
   <section class="mega-footer">
     <div class="footer-final">
       © 2025 Tree Trust Score. All rights reserved.
