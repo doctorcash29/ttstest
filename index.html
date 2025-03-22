@@ -6,55 +6,18 @@
   <title>TTS Dashboard</title>
   <!-- Fuentes: VT323 y Share Tech Mono para un estilo Matrix -->
   <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=VT323&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css" />
   
-  <!-- Estilos adicionales -->
-  <style>
-    /* Ajuste para "Create your profile" */
-    .create-profile h3 {
-      color: #0FFF95;
-      margin-bottom: 1.5rem;
-      font-family: 'VT323', monospace;
-      font-size: 2.5rem;
-      text-shadow: -1px 0 #000, 1px 0 #000, 0 -1px #000, 0 1px #000;
-    }
-    /* Botones del footer con efecto glitch */
-    .footer-btn {
-      display: inline-block;
-      padding: 0.4rem 0.8rem;
-      background-color: transparent;
-      color: #fff;
-      border: 1px solid #fff;
-      border-radius: 4px;
-      text-decoration: none;
-      transition: background-color 0.3s, transform 0.3s, color 0.3s;
-    }
-    .footer-btn:hover {
-      background-color: #0FFF95;
-      color: #000;
-      animation: glitch 1s steps(2, end);
-      transform: scale(1.05);
-    }
-    .footer-btn:visited {
-      color: #fff;
-    }
-    @keyframes glitch {
-      0% { text-shadow: 2px 2px 0 #0FFF95, -2px -2px 0 #0FFF95; }
-      20% { text-shadow: -2px 2px 0 #0FFF95, 2px -2px 0 #0FFF95; }
-      40% { text-shadow: 2px -2px 0 #0FFF95, -2px 2px 0 #0FFF95; }
-      60% { text-shadow: -2px -2px 0 #0FFF95, 2px 2px 0 #0FFF95; }
-      80% { text-shadow: 2px 2px 0 #0FFF95, -2px -2px 0 #0FFF95; }
-      100% { text-shadow: none; }
-    }
-  </style>
+  <!-- Enlaza tu CSS externo -->
+  <link rel="stylesheet" href="style.css" />
+
 </head>
 <body>
   <!-- Overlay de carga: ocupa toda la pantalla -->
-  <div id="loading-overlay">
+  <div id="loading-overlay" class="active">
     <div class="loading-text">Logging in Matrix</div>
   </div>
 
-  <!-- Canvas para efecto Matrix en el fondo -->
+  <!-- Canvas para efecto Matrix en el fondo (inicia oculto por z-index) -->
   <canvas id="matrix"></canvas>
 
   <!-- Audio de fondo sin autoplay -->
@@ -81,26 +44,29 @@
 
   <!-- TOP BAR: botones y menú -->
   <header class="main-top-bar">
-    <div class="left-bar" style="display: flex; gap: 2rem;">
-      <div style="display: flex; flex-direction: column;">
-        <button onclick="window.location.href='#tokenomics'" class="top-btn click-anim-btn matrix-btn">
-          Tokenomics
-          <img src="Logo_tokenomics.png" alt="Arrow Icon" class="matrix-icon" />
-        </button>
-        <button id="docs-btn" class="top-btn click-anim-btn matrix-btn" style="margin-top: 0.5rem;">
-          Docs
-        </button>
-      </div>
-      <div style="display: flex; flex-direction: column;">
-        <button onclick="window.location.href='#how-to-buy'" class="top-btn click-anim-btn matrix-btn">
-          How to buy
-          <img src="Logo_Solana.png" alt="Arrow Icon" class="matrix-icon" />
-        </button>
-        <button id="play-music-btn" class="top-btn click-anim-btn matrix-btn" style="margin-top: 0.5rem;">
-          Play Music
-        </button>
-      </div>
+    <!-- Contenedor en forma de grid para los 4 botones -->
+    <div class="top-buttons-grid">
+      <button onclick="window.location.href='#tokenomics'" class="top-btn matrix-btn">
+        Tokenomics
+        <img src="Logo_tokenomics.png" alt="Tokenomics Icon" class="matrix-icon" />
+      </button>
+
+      <button onclick="window.location.href='#how-to-buy'" class="top-btn matrix-btn">
+        How to buy
+        <img src="Logo_Solana.png" alt="How to Buy Icon" class="matrix-icon" />
+      </button>
+
+      <button id="docs-btn" class="top-btn matrix-btn">
+        Docs
+        <img src="docs.png" alt="Docs Icon" class="matrix-icon" />
+      </button>
+
+      <button id="play-music-btn" class="top-btn matrix-btn">
+        Play Music
+        <img src="Play.png" alt="Play Music Icon" class="matrix-icon" />
+      </button>
     </div>
+
     <nav class="right-bar">
       <ul>
         <li><a href="#create-profile">Profile</a></li>
@@ -114,7 +80,7 @@
   <!-- Sección Hero -->
   <section class="hero-section">
     <div class="hero-content">
-      <div id="main-title" class="dashboard-title vt323-font animate-title" style="font-size: 3.6rem;">
+      <div id="main-title" class="dashboard-title vt323-font animate-title">
         TTS DASHBOARD
       </div>
       <p class="hero-subtitle">
@@ -127,7 +93,7 @@
     </div>
   </section>
 
-  <!-- Sección: Create Profile (movida más arriba) -->
+  <!-- Sección: Create Profile -->
   <section class="create-profile-section" style="margin-top: -50px;">
     <div class="create-profile" id="create-profile">
       <h3 class="vt323-font">Create your profile</h3>
@@ -179,6 +145,8 @@
       <img src="nobear4.png" alt="TTS Mascot 4" />
       <img src="nobear5.png" alt="TTS Mascot 5" />
       <img src="nobear6.png" alt="TTS Mascot 6" />
+      <img src="nobear7.png" alt="TTS Mascot 7" />
+      <img src="nobear8.png" alt="TTS Mascot 8" />
     </div>
   </section>
 
@@ -233,6 +201,9 @@
       © 2025 Tree Trust Score. All rights reserved.
     </div>
   </section>
+
+  <!-- Elemento para el cursor personalizado -->
+  <div id="custom-cursor"></div>
 
   <!-- Scripts -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>

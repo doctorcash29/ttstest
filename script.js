@@ -32,14 +32,54 @@ function animateLetters(selector) {
   });
 }
 
+// Efecto scramble (para distorsionar textos)
+function scrambleText(finalText, element, interval, callback) {
+  const totalIterations = 15;
+  let iteration = 0;
+  const textLength = finalText.length;
+  const scrambleInterval = setInterval(() => {
+    let displayText = "";
+    for (let i = 0; i < textLength; i++) {
+      if (i < (iteration / totalIterations) * textLength) {
+        displayText += finalText[i];
+      } else {
+        const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()";
+        displayText += chars[Math.floor(Math.random() * chars.length)];
+      }
+    }
+    element.textContent = displayText;
+    iteration++;
+    if (iteration > totalIterations) {
+      clearInterval(scrambleInterval);
+      element.textContent = finalText;
+      if (callback) callback();
+    }
+  }, interval);
+}
+
 // Función para reproducir sonido (sound1.mp3)
 function playSound() {
   const sound = document.getElementById("sound1");
   sound.play();
 }
 
-// Observadores para animar títulos y secciones al hacer scroll
+// ----------------------------------------------------------------------
+// INICIAR LÓGICA PRINCIPAL CUANDO EL DOM CARGA
+// ----------------------------------------------------------------------
 document.addEventListener('DOMContentLoaded', () => {
+  // Overlay de carga
+  const loadingOverlay = document.getElementById("loading-overlay");
+
+  // 1) Mantener overlay activo por 1.8 seg
+  setTimeout(() => {
+    // 2) Quitar overlay
+    loadingOverlay.classList.remove("active");
+
+    // 3) Iniciar animación de fondo Matrix
+    startMatrix();
+  }, 1800);
+
+  // Animaciones de títulos al hacer scroll
   const animateElements = document.querySelectorAll('.animate-title');
   const titleObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
@@ -49,7 +89,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   }, { threshold: 0.5 });
-  
+
   animateElements.forEach(el => {
     if (!el.id) {
       el.id = 'animate-' + Math.random().toString(36).substr(2, 9);
@@ -57,6 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
     titleObserver.observe(el);
   });
 
+  // Animaciones de secciones al hacer scroll
   const animateSections = document.querySelectorAll('.animate-section');
   const sectionObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
@@ -66,7 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   }, { threshold: 0.2 });
-  
+
   animateSections.forEach(section => {
     sectionObserver.observe(section);
   });
@@ -99,115 +140,88 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // EFECTO MATRIX (fondo animado)
+  // Formulario de perfil y consola
+  const form = document.getElementById('profile-form');
+  const codeConsole = document.getElementById('code-console');
+  const accessBtn = document.querySelector('.access-btn');
+  if (form) {
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const nickname = document.getElementById('nickname').value;
+      document.querySelector('.create-profile h3').textContent = 'Welcome!';
+      accessBtn.classList.add('tv-off');
+      setTimeout(() => {
+        form.style.display = 'none';
+        codeConsole.style.display = 'block';
+        codeConsole.textContent = '';
+        playSound();
+        scrambleText("Analyzing existing users", codeConsole, 50, () => {
+          setTimeout(() => {
+            playSound();
+            scrambleText("Adding to the database", codeConsole, 50, () => {
+              setTimeout(() => {
+                playSound();
+                scrambleText(`Welcome, ${nickname}!`, codeConsole, 50, null);
+              }, 2000);
+            });
+          }, 2000);
+        });
+      }, 800);
+    });
+  }
+
+  // Cursor personalizado
+  document.addEventListener('mousemove', (e) => {
+    const cursor = document.getElementById('custom-cursor');
+    if (!cursor) return;
+    cursor.style.left = e.clientX + 'px';
+    cursor.style.top = e.clientY + 'px';
+  });
+});
+
+// ----------------------------------------------------------------------
+// FUNCIÓN PARA INICIAR EFECTO MATRIX
+// ----------------------------------------------------------------------
+function startMatrix() {
   const canvasMatrix = document.getElementById("matrix");
   const ctxMatrix = canvasMatrix.getContext("2d");
+
   function resizeCanvas() {
     canvasMatrix.height = window.innerHeight;
     canvasMatrix.width = window.innerWidth;
   }
   resizeCanvas();
   window.addEventListener("resize", resizeCanvas);
+
   const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
   const letterArr = letters.split("");
   const fontSize = 14;
   let columns = canvasMatrix.width / fontSize;
   const drops = [];
+
   for (let x = 0; x < columns; x++) {
     drops[x] = 1;
   }
+
   function drawMatrix() {
     ctxMatrix.fillStyle = "rgba(0, 0, 0, 0.05)";
     ctxMatrix.fillRect(0, 0, canvasMatrix.width, canvasMatrix.height);
+
     ctxMatrix.fillStyle = "#0FFF95";
     ctxMatrix.font = fontSize + "px monospace";
+
     for (let i = 0; i < drops.length; i++) {
       const text = letterArr[Math.floor(Math.random() * letterArr.length)];
       ctxMatrix.fillText(text, i * fontSize, drops[i] * fontSize);
+
+      // Resetear la posición de la columna si llega al final
       if (drops[i] * fontSize > canvasMatrix.height && Math.random() > 0.975) {
         drops[i] = 0;
       }
       drops[i]++;
     }
   }
+
+  // Iniciar el intervalo para dibujar el efecto Matrix
   setInterval(drawMatrix, 33);
-
-  // EFECTO DE "INICIAL GLITCH" y luego "CARGANDO" al mostrar la sección Empowering Authenticity
-  let loadingTriggered = false;
-  const launchSection = document.getElementById("launch-app-nav");
-  const loadingOverlay = document.getElementById("loading-overlay");
-  const launchObserver = new IntersectionObserver((entries, observer) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting && !loadingTriggered) {
-        loadingTriggered = true;
-        // Fase 1: Aplica efecto glitch inicial (1.5 seg) solo al texto del overlay
-        loadingOverlay.classList.add("initial-glitch");
-        // Luego, después de 1.5 seg, elimina la fase de glitch y activa el modo "cargando" (4 seg)
-        setTimeout(() => {
-          loadingOverlay.classList.remove("initial-glitch");
-          loadingOverlay.classList.add("active");
-          setTimeout(() => {
-            loadingOverlay.classList.remove("active");
-          }, 4000);
-        }, 1500);
-        observer.unobserve(launchSection);
-      }
-    });
-  }, { threshold: 0.5 });
-  launchObserver.observe(launchSection);
-});
-
-// Efecto scramble (para distorsionar textos)
-function scrambleText(finalText, element, interval, callback) {
-  const totalIterations = 15;
-  let iteration = 0;
-  const textLength = finalText.length;
-  const scrambleInterval = setInterval(() => {
-    let displayText = "";
-    for (let i = 0; i < textLength; i++) {
-      if (i < (iteration / totalIterations) * textLength) {
-        displayText += finalText[i];
-      } else {
-        const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()";
-        displayText += chars[Math.floor(Math.random() * chars.length)];
-      }
-    }
-    element.textContent = displayText;
-    iteration++;
-    if (iteration > totalIterations) {
-      clearInterval(scrambleInterval);
-      element.textContent = finalText;
-      if (callback) callback();
-    }
-  }, interval);
-}
-
-// Formulario de perfil y consola
-const form = document.getElementById('profile-form');
-const codeConsole = document.getElementById('code-console');
-const accessBtn = document.querySelector('.access-btn');
-if (form) {
-  form.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const nickname = document.getElementById('nickname').value;
-    document.querySelector('.create-profile h3').textContent = 'Welcome!';
-    accessBtn.classList.add('tv-off');
-    setTimeout(() => {
-      form.style.display = 'none';
-      codeConsole.style.display = 'block';
-      codeConsole.textContent = '';
-      playSound();
-      scrambleText("Analyzing existing users", codeConsole, 50, () => {
-        setTimeout(() => {
-          playSound();
-          scrambleText("Adding to the database", codeConsole, 50, () => {
-            setTimeout(() => {
-              playSound();
-              scrambleText(`Welcome, ${nickname}!`, codeConsole, 50, null);
-            }, 2000);
-          });
-        }, 2000);
-      });
-    }, 800);
-  });
 }
